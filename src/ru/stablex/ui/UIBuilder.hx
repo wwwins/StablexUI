@@ -122,7 +122,8 @@ class UIBuilder {
 
         //If provided with file for defaults, generate closures for applying defaults to widgets
         if( defaultsXmlFile != null ){
-            var root : Xml = Xml.parse( File.getContent(defaultsXmlFile) ).firstElement();
+            //var root : Xml = Xml.parse( File.getContent(defaultsXmlFile) ).firstElement();
+            var root:Xml = Xml.parse( File.getContent(XmlFileHelper.getPath(defaultsXmlFile)) ).firstElement();
             for(widget in root.elements()){
                 code += '\nif( !ru.stablex.ui.UIBuilder.defaults.exists("' + widget.nodeName + '") ) ru.stablex.ui.UIBuilder.defaults.set("' + widget.nodeName + #if haxe3 '", new Map());' #else '", new Hash());' #end;
                 for(node in widget.elements()){
@@ -658,7 +659,8 @@ class UIBuilder {
     macro static public function buildFn (xmlFile:String) : Expr{
         UIBuilder._checkInit();
 
-        var element = Xml.parse( File.getContent(xmlFile) ).firstElement();
+        //var element = Xml.parse( File.getContent(xmlFile) ).firstElement();
+        var element = Xml.parse( File.getContent(XmlFileHelper.getPath(xmlFile)) ).firstElement();
         var cls : String = UIBuilder._imports.get(element.nodeName);
 
         #if display
@@ -717,7 +719,8 @@ class UIBuilder {
 
         UIBuilder._checkInit();
 
-        var element = Xml.parse( File.getContent(xmlFile) ).firstElement();
+        //var element = Xml.parse( File.getContent(xmlFile) ).firstElement();
+	var element = Xml.parse( File.getContent(XmlFileHelper.getPath(xmlFile)) ).firstElement();
 
         var code   : String = '';
         var erSkin : EReg = ~/^([a-z0-9_]+):([a-z0-9_]+)$/i;

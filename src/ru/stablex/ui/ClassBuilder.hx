@@ -31,7 +31,8 @@ class ClassBuilder {
         cls = pack.pop();
 
         //parse xml file
-        var root = Xml.parse( File.getContent(xmlFile) ).firstElement();
+        //var root = Xml.parse( File.getContent(xmlFile) ).firstElement();
+        var root = Xml.parse( File.getContent( XmlFileHelper.getPath(xmlFile) ) ).firstElement();
 
         //get parent
         var parentPack : Array<String> = ClassBuilder.getPack(root.nodeName);

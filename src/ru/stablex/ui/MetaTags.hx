@@ -37,7 +37,8 @@ class MetaTags {
             var xmlFile : String = node.get('src');
             if( xmlFile == null ) Err.trigger('meta:include - file is not specified');
 
-            var code : String = UIBuilder.construct( Xml.parse( File.getContent(xmlFile) ).firstElement(), 1, null, "__meta__include" );
+            //var code : String = UIBuilder.construct( Xml.parse( File.getContent(xmlFile) ).firstElement(), 1, null, "__meta__include" );
+            var code : String = UIBuilder.construct( Xml.parse( File.getContent(XmlFileHelper.getPath(xmlFile)) ).firstElement(), 1, null, "__meta__include" );
             code += '\nreturn __meta__include1;';
             code = '\n' + parentWidget + '.addChild((function() : ru.stablex.ui.widgets.Widget {' + code + '})());';
 

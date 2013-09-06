@@ -187,7 +187,8 @@ class UIBuilder {
         UIBuilder.registerClass('ru.stablex.ui.widgets.HBox');
         UIBuilder.registerClass('ru.stablex.ui.widgets.ViewStack');
         UIBuilder.registerClass('ru.stablex.ui.widgets.Scroll');
-	UIBuilder.registerClass('ru.stablex.ui.widgets.VScroll');
+		UIBuilder.registerClass('ru.stablex.ui.widgets.VScroll');
+		UIBuilder.registerClass('ru.stablex.ui.widgets.Calendars');
         UIBuilder.registerClass('ru.stablex.ui.widgets.Progress');
         UIBuilder.registerClass('ru.stablex.ui.widgets.Floating');
         UIBuilder.registerClass('ru.stablex.ui.widgets.Options');
@@ -217,6 +218,8 @@ class UIBuilder {
         UIBuilder.registerClass('ru.stablex.ui.Dnd');
         UIBuilder.registerClass('ru.stablex.TweenSprite');
         UIBuilder.registerClass('ru.stablex.Assets');
+		UIBuilder.registerClass('ru.stablex.ui.date.Calendar');
+		UIBuilder.registerClass('ru.stablex.ui.date.CalendarDate');
 
 		UIBuilder.registerClass('flash.events.Event');
         UIBuilder.registerClass('flash.events.MouseEvent');

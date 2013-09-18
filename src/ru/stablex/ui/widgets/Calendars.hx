@@ -2,8 +2,10 @@ package ru.stablex.ui.widgets;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
+import ru.stablex.DynamicList;
 import ru.stablex.ui.date.Calendar;
 import ru.stablex.ui.date.CalendarDate;
+import ru.stablex.ui.misc.BtnState;
 
 
 /**
@@ -14,17 +16,26 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 
 	public var dayWidth:UInt = 60;
 	public var dayHeight:UInt = 44;
+	public var year:UInt;
+	public var month:UInt;
+	public var todayDate:String;
+	public var arrOrder:Array<String>;
+	
+	public var labelDefaults:String = "EventLabel";
+	public var titleDefaults:String = "Default";
+	public var panelDefaults:String = "Default";
+	public var panelLeftDefaults:String = "Default";
+	public var panelRightDefaults:String = "Default";
+	public var panelLeftText:String = "";
+	public var panelRightText:String = "";
 	
 	private var max:UInt = 37;
 	private var hHeight:UInt = 55;
 	private var wHeight:UInt = 20;
 
-	public var year:UInt;
-	public var month:UInt;
-	public var todayDate:String;
-
 	private var calendar:Array<CalendarDate>;	
 	private var dayList:Array<StateButton>;
+	static private var labels:Map<StateButton, Text> = new Map<StateButton, Text>();
 	
 	private var panelText:Text;
 	
@@ -40,6 +51,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 
 		// today
 		todayDate = DateTools.format(Date.now(), "%Y%m%d");
+		arrOrder = ["none", "sun", "sat", "holiday", "now"];
 
 		// move to onInitialize
 		//initDays();
@@ -49,29 +61,50 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 
 	private function initDays():Void {
 		dayList = new Array<StateButton>();
-		var day:StateButton;
+		var day:StateButton; // 1,2,3...31
+		var label:Text; // (1),(2)...
+		var container:Widget;
 		for (n in 0...max) {
+			container = UIBuilder.create(Widget, {
+				left:((dayWidth + 1) * (n % 7) + 1),
+				top:((dayHeight + 1) * Math.floor(n / 7) + hHeight + wHeight + 2),
+			});
+			
+			label = UIBuilder.create(Text, { 
+				defaults: this.labelDefaults,
+				mouseEnabled: false,
+				mouseChildren: false,
+				text: '',
+				w:dayWidth,
+				h:dayHeight,
+				align: 'center,bottom'
+			} );
+			
 			day = UIBuilder.create(StateButton, {
 				defaults:'Default',
 				w:dayWidth,
 				h:dayHeight,
-				left:((dayWidth + 1) * (n % 7) + 1),
-				top:((dayHeight + 1) * Math.floor(n / 7) + hHeight + wHeight + 2),
-				order:["none", "sun", "sat", "holiday", "now"]
+				cycleStates:false,
+				order:this.arrOrder
 			});
 
-			day.states.sun.skinName = 'SunColor';
-			day.states.sat.skinName = 'SatColor';
-			day.states.none.skinName = 'NoneColor';
-			day.states.now.skinName = 'NowColor';
-			day.states.holiday.skinName = 'HolidayColor';
-			
+			// set skinName
+			var state : BtnState;
+			for (i in arrOrder) {
+				state = day.states.get(i);
+				if (state.skinName == null) {
+					state.skinName = i.charAt(0).toUpperCase() + i.substr(1) + 'Color';
+				}
+			}
 			day.onInitialize();
 			day.onCreate();
 			
 			dayList.push(day);
-
-			this.addChild(day);
+			labels.set(day, label);
+			
+			container.addChild(day);
+			container.addChild(label);
+			this.addChild(container);
 		}
 	}
 	
@@ -93,7 +126,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 				left:(dayWidth + 1) * n + 1,
 				top: hHeight + 1,
 				align:'center,middle',
-				skinName:'GrayBox'
+				skinName:this.titleDefaults
 			});
 			addChild(base);
 		}
@@ -101,30 +134,35 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 	
 	private function createPanel():Void {
 		this.panel = UIBuilder.create(Box, {
-			widthPt    : 100,
-			autoHeight : true,
-			vertical   : false,
-			align      : 'center,bottom',
-			skinName   : 'WhiteBox'
+			widthPt     : 90,
+			autoHeight  : true,
+			vertical    : false,
+			align       : 'center,bottom',
+			skinName    : this.panelDefaults
 		});
+		this.panel.leftPt = 5;
 		this.addChild(this.panel);
 		
 		var btnPrev:Button = UIBuilder.create(Button, { 
-				text:"<<<"
+				text:panelLeftText,
+				defaults:this.panelLeftDefaults
 			} );
-			btnPrev.addUniqueListener(MouseEvent.CLICK, handlePrev);
+		btnPrev.addUniqueListener(MouseEvent.CLICK, handlePrev);
 
-			
 		panelText = UIBuilder.create(Text, { 
 				defaults:'Default',
 				text:"2013年9月",
+				align:'center,middle',
 				mouseEnabled:false,
 				mouseChildren:false
 			} );
 			
 		var btnNext:Button = UIBuilder.create(Button, { 
-				text:">>>"
+				text:panelRightText,
+				defaults:this.panelRightDefaults
 			} );
+			
+		panelText.h = btnNext.h;
 		btnNext.addUniqueListener(MouseEvent.CLICK, handleNext);
 		
 		panel.addChild(btnPrev);
@@ -147,6 +185,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 	
 	private function showDay(day:StateButton, d:CalendarDate = null, now:Bool = false):Void {
 		day.visible = true;
+		labels.get(day).visible = true;
 		var date:CalendarDate = d;
 		var type:Int = Calendar.NONE;
 		var holiday = null;
@@ -169,7 +208,10 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 		}
 		if (now)
 			day.set("now");
-		if (date != null && date.day > 0) day.text = Std.string(date.day);
+		if (date != null && date.day > 0) {
+			day.text = Std.string(date.day);
+			labels.get(day).text = "(" + date.day + ")";
+		}
 	}
 	
 	private function manage(y:UInt, m:UInt):Void {
@@ -226,12 +268,13 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 		var d:Int;
 		var day:StateButton;
 		var date:CalendarDate;
-		
+
 		for (n in 0...max) 
 		{
 			d = n - first + 1;
 			day = dayList[n];
 			day.visible = false;
+			labels.get(day).visible = false;			
 			if (d > 0) {
 				date = calendar[d];
 				if (date != null)

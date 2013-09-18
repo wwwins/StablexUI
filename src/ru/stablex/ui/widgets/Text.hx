@@ -21,7 +21,8 @@ class Text extends Box{
     public var highlighted (default,null) : Bool = false;
     //Getter-setter for text.
     public var text (get_text,set_text) : String;
-
+	//Getter-setter for htmlText.
+	public var htmlText (get_htmlText,set_htmlText) : String;
 
     /**
     * Constructor
@@ -155,6 +156,32 @@ class Text extends Box{
         return txt;
     }//function set_text()
 
+    /**
+    * htmlText getter
+    *
+    */
+    private function get_htmlText() : String {
+        return this.label.htmlText;
+    }
+
+
+    /**
+    * htmlText setter
+    *
+    */
+    private function set_htmlText(txt:String) : String {
+        this.label.htmlText = txt;
+
+        //if widget needs to be resized to fit new string size
+        if( this.autoWidth || this.autoHeight ){
+            this.refresh();
+        //otherwise just realign text
+        }else{
+            this.alignElements();
+        }
+
+        return txt;
+    }
 
 
 }//class Text

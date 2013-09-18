@@ -164,7 +164,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 		panelText.text = toString();
 	}
 	
-	private function showDay(day:StateButton, d:CalendarDate = null, now:Bool = false):Void {
+	public function showDay(day:StateButton, d:CalendarDate = null, now:Bool = false):Void {
 		day.visible = true;
 		var date:CalendarDate = d;
 		var type:Int = Calendar.NONE;
@@ -189,7 +189,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 		if (now)
 			day.set("now");
 		if (date != null && date.day > 0) {
-			day.htmlText = Std.string(date.day)+"\n"+"<font color='#3AC5F0'>("+date.day+")</font>";
+			day.text = Std.string(date.day);
 		}
 	}
 	

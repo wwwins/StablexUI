@@ -21,11 +21,10 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 	public var todayDate:String;
 	public var arrOrder:Array<String>;
 	
-	public var labelDefaults:String = "EventLabel";
-	public var titleDefaults:String = "Default";
-	public var panelDefaults:String = "Default";
-	public var panelLeftDefaults:String = "Default";
-	public var panelRightDefaults:String = "Default";
+	public var titleSkinName:String = "Default";
+	public var panelSkinName:String = "Default";
+	public var panelLeftSkinName:String = "Default";
+	public var panelRightSkinName:String = "Default";
 	public var panelLeftText:String = "";
 	public var panelRightText:String = "";
 	
@@ -35,7 +34,6 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 
 	private var calendar:Array<CalendarDate>;	
 	private var dayList:Array<StateButton>;
-	static private var labels:Map<StateButton, Text> = new Map<StateButton, Text>();
 	
 	private var panelText:Text;
 	
@@ -62,28 +60,14 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 	private function initDays():Void {
 		dayList = new Array<StateButton>();
 		var day:StateButton; // 1,2,3...31
-		var label:Text; // (1),(2)...
-		var container:Widget;
 		for (n in 0...max) {
-			container = UIBuilder.create(Widget, {
-				left:((dayWidth + 1) * (n % 7) + 1),
-				top:((dayHeight + 1) * Math.floor(n / 7) + hHeight + wHeight + 2),
-			});
-			
-			label = UIBuilder.create(Text, { 
-				defaults: this.labelDefaults,
-				mouseEnabled: false,
-				mouseChildren: false,
-				text: '',
-				w:dayWidth,
-				h:dayHeight,
-				align: 'center,bottom'
-			} );
-			
+		
 			day = UIBuilder.create(StateButton, {
 				defaults:'Default',
 				w:dayWidth,
 				h:dayHeight,
+				left:((dayWidth + 1) * (n % 7) + 1),
+				top:((dayHeight + 1) * Math.floor(n / 7) + hHeight + wHeight + 2),
 				cycleStates:false,
 				order:this.arrOrder
 			});
@@ -100,11 +84,8 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 			day.onCreate();
 			
 			dayList.push(day);
-			labels.set(day, label);
 			
-			container.addChild(day);
-			container.addChild(label);
-			this.addChild(container);
+			this.addChild(day);
 		}
 	}
 	
@@ -126,7 +107,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 				left:(dayWidth + 1) * n + 1,
 				top: hHeight + 1,
 				align:'center,middle',
-				skinName:this.titleDefaults
+				skinName:this.titleSkinName
 			});
 			addChild(base);
 		}
@@ -138,14 +119,14 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 			autoHeight  : true,
 			vertical    : false,
 			align       : 'center,bottom',
-			skinName    : this.panelDefaults
+			skinName    : this.panelSkinName
 		});
 		this.panel.leftPt = 5;
 		this.addChild(this.panel);
 		
 		var btnPrev:Button = UIBuilder.create(Button, { 
 				text:panelLeftText,
-				defaults:this.panelLeftDefaults
+				defaults:this.panelLeftSkinName
 			} );
 		btnPrev.addUniqueListener(MouseEvent.CLICK, handlePrev);
 
@@ -159,7 +140,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 			
 		var btnNext:Button = UIBuilder.create(Button, { 
 				text:panelRightText,
-				defaults:this.panelRightDefaults
+				defaults:this.panelRightSkinName
 			} );
 			
 		panelText.h = btnNext.h;
@@ -185,7 +166,6 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 	
 	private function showDay(day:StateButton, d:CalendarDate = null, now:Bool = false):Void {
 		day.visible = true;
-		labels.get(day).visible = true;
 		var date:CalendarDate = d;
 		var type:Int = Calendar.NONE;
 		var holiday = null;
@@ -209,8 +189,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 		if (now)
 			day.set("now");
 		if (date != null && date.day > 0) {
-			day.text = Std.string(date.day);
-			labels.get(day).text = "(" + date.day + ")";
+			day.htmlText = Std.string(date.day)+"\n"+"<font color='#3AC5F0'>("+date.day+")</font>";
 		}
 	}
 	
@@ -274,7 +253,6 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 			d = n - first + 1;
 			day = dayList[n];
 			day.visible = false;
-			labels.get(day).visible = false;			
 			if (d > 0) {
 				date = calendar[d];
 				if (date != null)

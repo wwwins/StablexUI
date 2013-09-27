@@ -171,6 +171,8 @@ class UIBuilder {
         UIBuilder.regEvent('drop',        'ru.stablex.ui.events.DndEvent.DROP',             'ru.stablex.ui.events.DndEvent');
         UIBuilder.regEvent('receiveDrop', 'ru.stablex.ui.events.DndEvent.RECEIVE',          'ru.stablex.ui.events.DndEvent');
         UIBuilder.regEvent('beforeScroll','ru.stablex.ui.events.ScrollEvent.BEFORE_SCROLL', 'ru.stablex.ui.events.ScrollEvent');
+        UIBuilder.regEvent('scrollPullToRefresh',  'ru.stablex.ui.events.WidgetEvent.SCROLL_PULL_TO_REFRESH',   'ru.stablex.ui.events.WidgetEvent');
+        UIBuilder.regEvent('scrollPushToRefresh',  'ru.stablex.ui.events.WidgetEvent.SCROLL_PUSH_TO_REFRESH',   'ru.stablex.ui.events.WidgetEvent');
 
         //registering frequently used classes
         UIBuilder.registerClass('ru.stablex.ui.widgets.Text');

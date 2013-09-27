@@ -23,6 +23,9 @@ class WidgetEvent extends Event{
     static public inline var SCROLL_START = 'widgetScrollStart';
     //Dispatched when scrolling was stopped
     static public inline var SCROLL_STOP = 'widgetScrollStop';
+	//Dispatched when pull&push to refresh
+	static public inline var SCROLL_PULL_TO_REFRESH = "scrollPullToRefresh";
+	static public inline var SCROLL_PUSH_TO_REFRESH = "scrollPushToRefresh";
     //Dispatched when a widget is added to another
     static public inline var ADDED = 'widgetAdded';
     //Dispatched when a widget is removed from another

@@ -202,17 +202,17 @@ class VScroll extends Widget{
         this.addUniqueListener(Event.ENTER_FRAME, fn);
 
         //stop following
-        var fnStop : MouseEvent->Void = null;
-        fnStop = function(e:MouseEvent) : Void {
-            this._processingDrag = false;
+		var fnStop : MouseEvent->Void = null;
+		fnStop = function(e:MouseEvent) : Void {
+			this._processingDrag = false;
 
-            this.removeEventListener(Event.ENTER_FRAME, fn);
-            Lib.current.stage.removeEventListener(MouseEvent.MOUSE_UP, fnStop);
+			this.removeEventListener(Event.ENTER_FRAME, fn);
+			Lib.current.stage.removeEventListener(MouseEvent.MOUSE_UP, fnStop);
 
-            if( scrolled ){
-                #if html5 if( blocker.parent == this) this.removeChild(blocker); #end
-                this.box.mouseEnabled  = true;
-                this.box.mouseChildren = true;
+			if( scrolled ){
+				#if html5 if( blocker.parent == this) this.removeChild(blocker); #end
+				this.box.mouseEnabled  = true;
+				this.box.mouseChildren = true;
 
 				//ios scrolling
 				downStageY = -1;
@@ -220,9 +220,18 @@ class VScroll extends Widget{
 				addUniqueListener(Event.ENTER_FRAME, ent);
 				moveY = (mouseY1 - mouseY2) * (Std.int(Math.abs((mouseY1 - mouseY2) / 20)) + 1);
 
-				
+				// pull&push to refresh
+				if ((this.box.top > this.h * 0.5) && (this.box.top < this.h)) {
+					this.dispatchEvent(new WidgetEvent(WidgetEvent.SCROLL_PULL_TO_REFRESH));
+					return;
+				}
+				if ((this.box.top < this.h * 0.5 - this.box.h) && (this.box.top > -this.box.h)) {
+					this.dispatchEvent(new WidgetEvent(WidgetEvent.SCROLL_PUSH_TO_REFRESH));
+					return;
+				}
+
 			}
-        }//fnStop()
+		}//fnStop()
 
         //stop scrolling
         Lib.current.stage.removeEventListener(MouseEvent.MOUSE_UP, fnStop);

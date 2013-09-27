@@ -132,7 +132,7 @@ class Calendars extends ru.stablex.ui.widgets.Widget{
 
 		panelText = UIBuilder.create(Text, { 
 				defaults:'Default',
-				text:"2013年9月",
+				text:toString(),
 				align:'center,middle',
 				mouseEnabled:false,
 				mouseChildren:false
